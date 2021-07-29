@@ -1,0 +1,23 @@
+{
+  "name": "todo",
+  "version": "1.0.0",
+  "description": "simple todo list",
+  "main": "server.js",
+  "scripts": {
+    "test": "node server.js",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/camotoad/todoList.git"
+  },
+  "author": "GXY",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/camotoad/todoList/issues"
+  },
+  "homepage": "https://github.com/camotoad/todoList#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
