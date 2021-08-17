@@ -1,5 +1,3 @@
-const db = require('mongoose').model('todo');
-
 //selectors
 const todoInput = document.querySelector('.todo-input');
 const todoButton = document.querySelector('.todo-button');
@@ -43,22 +41,13 @@ function addTodo(event){
     const deleteButton = document.createElement('button');
     deleteButton.innerHTML = '<i class="fas fa-trash"> </i>';
     deleteButton.classList.add('delete-btn');
-    
-    const newEntry = new db({
-        item: todoInput.value,
-        status: false
-    });
 
-    newEntry.save((err) => {
-        if(err){
-            errtxt(err);
-        } else {
-            todoDiv.appendChild(newTodo);
-            todoDiv.appendChild(completedButton);
-            todoDiv.appendChild(deleteButton);
-            todoList.appendChild(todoDiv);
-        }
-    });
+    todoDiv.appendChild(newTodo);
+    todoDiv.appendChild(completedButton);
+    todoDiv.appendChild(deleteButton);
+    todoList.appendChild(todoDiv);
+
+    saveTodos(todoInput.value);
 
     resetText();
 }
@@ -69,26 +58,13 @@ function buttonCheck(event){
 
     switch(item.classList[0]){
         case 'delete-btn':
-            //console.log(todo.childNodes[0].innerText);
-            db.findOneAndDelete({item : todo.childNodes[0].innerText }, function(err, item){
-                if(err){ 
-                    errtxt(err);
-                } else {
-                todo.remove();
-                console.log('deleted ' + item);
-                }
-            });       
+            deleteTodos(todo);
+            todo.remove();
+            console.log('deleted ' + item);      
             break;
         case 'completed-btn':
-            db.findOneAndUpdate({ item : todo.childNodes[0].innerText }, { status : true} , {upsert: true}, 
-                function(err, item){
-                    if(err){
-                        errtxt(err);
-                    } else {
-                        console.log('completed ' + item)
-                        todo.classList.toggle('completed');
-                    }
-            });           
+            console.log('completed ' + item)
+            todo.classList.toggle('completed');       
             break;
     } 
 }
@@ -123,35 +99,28 @@ function filterTodo(event){
 function loadTodos(){
     resetText();
 
-    db.find({}, function(err, items) {
-        if(err){
-            errtxt(err);
-        } else {
-            items.forEach((item) => {
-                const todoDiv = document.createElement('div');
-                todoDiv.classList.add('todo');
+    
+}
 
-                const newTodo = document.createElement('li');
-                newTodo.innerText = item.item;
-                newTodo.classList.add('todo-item');
-                todoDiv.appendChild(newTodo);
+function saveTodos(todo){
+    let todos;
+    if(localStorage.getItem('todos') === null){
+        todos = [];
+    } else {
+        todos = JSON.parse(localStorage.getItem('todos'));
+    }
+    todos.push(todo);
+    localStorage.setItem('todos', JSON.stringify(todos));
+}
 
-                const completedButton = document.createElement('button');
-                completedButton.innerHTML = '<i class="fas fa-check"> </i>';
-                completedButton.classList.add('completed-btn');
-                todoDiv.appendChild(completedButton);
-
-                const deleteButton = document.createElement('button');
-                deleteButton.innerHTML = '<i class="fas fa-trash"> </i>';
-                deleteButton.classList.add('delete-btn');
-                todoDiv.appendChild(deleteButton);
-
-                todoList.appendChild(todoDiv);
-
-                if(item.status){
-                    todoDiv.classList.toggle('completed');
-                }
-            });
-        }
-    })
+function deleteTodos(todo){
+    let todos;
+    if (localStorage.getItem('todos') === null) {
+      todos = [];
+    } else {
+      todos = JSON.parse(localStorage.getItem('todos'));
+    }
+    const todoIndex = todo.children[0].innerText;
+    todos.splice(todos.indexOf(todoIndex), 1);
+    localStorage.setItem('todos', JSON.stringify(todos));
 }
