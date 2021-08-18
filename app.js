@@ -60,10 +60,13 @@ function buttonCheck(event){
         case 'delete-btn':
             deleteTodos(todo);
             todo.remove();
-            console.log('deleted ' + item);      
+            //console.log('deleted ' + todo.innerText);      
             break;
         case 'completed-btn':
-            console.log('completed ' + item)
+            //console.log('completed ' + todo.innerText)
+            localStorage.getItem(todo.innerText) === null 
+                ? localStorage.setItem(todo.innerText, JSON.stringify(['true'])) 
+                : localStorage.removeItem(todo.innerText);
             todo.classList.toggle('completed');       
             break;
     } 
@@ -125,6 +128,8 @@ function loadTodos(){
         todoDiv.appendChild(completedButton);
         todoDiv.appendChild(deleteButton);
         todoList.appendChild(todoDiv);
+
+        if (localStorage.getItem(todo) !== null) {todoDiv.classList.toggle('completed')};
     })
 }
 
