@@ -99,7 +99,33 @@ function filterTodo(event){
 function loadTodos(){
     resetText();
 
-    
+    let todos;
+    if(localStorage.getItem('todos') === null){
+        todos = [];
+    } else {
+        todos = JSON.parse(localStorage.getItem('todos'));
+    }
+    todos.forEach((todo) => {
+        const todoDiv = document.createElement('div');
+        todoDiv.classList.add('todo');
+
+        const newTodo = document.createElement('li');
+        newTodo.innerText = todo;
+        newTodo.classList.add('todo-item');
+        
+        const completedButton = document.createElement('button');
+        completedButton.innerHTML = '<i class="fas fa-check"> </i>';
+        completedButton.classList.add('completed-btn');
+        
+        const deleteButton = document.createElement('button');
+        deleteButton.innerHTML = '<i class="fas fa-trash"> </i>';
+        deleteButton.classList.add('delete-btn');
+
+        todoDiv.appendChild(newTodo);
+        todoDiv.appendChild(completedButton);
+        todoDiv.appendChild(deleteButton);
+        todoList.appendChild(todoDiv);
+    })
 }
 
 function saveTodos(todo){
